@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>KeyReply Chatbot ROI Calculator</title>
+    <meta name="description" content="KeyReply Chatbot ROI Calculator" />
+    <meta name="author" content="keyreply" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+
+    <link
+      rel="shortcut icon"
+      href="https://www.keyreply.com/hubfs/apple-touch-icon-180x180.png"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+      rel="stylesheet"
+    />
+    <link
+      href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="index.css?v=1.0" />
+
+    <!-- production -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app" v-cloak>
+      <v-app>
+        <v-main>
+          <v-container>
+            <v-row no-gutters>
+              <v-col cols="12" class="px-10 py-15">
+                <p class="text-h5 text-center font-weight-bold primary--text">
+                  Chatbot ROI calculator
+                </p>
+                <p class="text-h3 mb-10 text-center font-weight-light">
+                  AI makes scaling your customer engagement program a lot easier
+                  than you think.
+                </p>
+                <p
+                  class="text-subtitle-1 mb-10 text-center grey--text lighten-1"
+                >
+                  Your business is going to grow, and your customer base will
+                  grow with it.<br />A Comm100 AI-powered chatbot will equip you
+                  for the ride, at a price that will make your head of finance
+                  smile.
+                </p>
+              </v-col>
+            </v-row>
+          </v-container>
+
+          <v-container fluid class="pa-0">
+            <v-row no-gutters>
+              <v-col cols="12" sm="4" class="pa-10">
+                <p class="text-h4">About your team</p>
+
+                <!-- Number of live chat agents -->
+                <kr-slider
+                  :max="100"
+                  :min="0"
+                  :default="25"
+                  label="Number of active live chat agents"
+                  hint="How many human agents are there on your live chat team?"
+                  @change="numberOrLiveChatAgents = $event"
+                ></kr-slider>
+
+                <!-- Live chat availability -->
+                <kr-hours-counter
+                  label="Live chat availability"
+                  hint="What are the operating hours of your live chat service?"
+                  @change="liveChatAvailability = $event"
+                ></kr-hours-counter>
+
+                <!-- Average compensation per agent -->
+                <kr-slider
+                  :max="100000"
+                  :min="10000"
+                  :default="40000"
+                  tag-append="/year"
+                  tag-prepend="$"
+                  hint="Salary plus related benefits and expenses (e.g. training, vacation pay, etc.) in US dollars"
+                  label="Average compensation per agent"
+                  @change="averageCompensationPerAgent = $event"
+                ></kr-slider>
+
+                <v-divider></v-divider>
+                <br />
+
+                <p class="text-h4">Your chats</p>
+
+                <!-- Average length of chat -->
+                <kr-slider
+                  :max="30"
+                  :min="1"
+                  :default="12"
+                  label="Average length of chat"
+                  tag-append=" min"
+                  hint="If you’re already using live chat, this is your average chat length in minutes. If you’re not sure what that is, we suggest these numbers based on our 2019 Benchmark Report:
+                  &lt;br/&gt;
+                  &lt;ul&gt;&lt;li&gt;Banking &amp; Finance: 13 min&lt;/li&gt;
+                  &lt;li&gt;Healthcare: 11 min&lt;/li&gt;
+                  &lt;li&gt;Government: 14 min&lt;/li&gt;
+                  &lt;li&gt;eCommerce: 14 min&lt;/li&gt;
+                  &lt;li&gt;Manufacturing: 18 min&lt;/li&gt;
+                  &lt;li&gt;Technology: 15 min&lt;/li&gt;
+                  &lt;li&gt;Recreation: 8 min&lt;/li&gt;&lt;/ul&gt;"
+                  @change="averageLengthOfChat = $event"
+                ></kr-slider>
+
+                <!-- Average length of chat -->
+                <kr-slider
+                  :max="10"
+                  :min="1"
+                  :default="3"
+                  label="Number of concurrent chats per agent"
+                  tag-append=" chats"
+                  hint="The number of chats an agent can handle simultaneously. The average is typically 3 to 5, but this depends on industry and agent experience."
+                  @change="numberOfConcurrentChatsPerAgent = $event"
+                ></kr-slider>
+
+                <!-- Average length of chat -->
+                <kr-slider
+                  :max="100"
+                  :min="0"
+                  :default="20"
+                  label="Anticipated chat volumn growth"
+                  tag-append="%"
+                  hint="Your anticipated percentage increase in chat volume."
+                  description="Whether you're expecting more customer queries or want to deflect chats to a chatbot during extended hours, use this slider to indicate the anticipated change."
+                  @change="anticipatedChatVolumnGrowth = $event"
+                ></kr-slider>
+
+                <v-divider></v-divider>
+                <br />
+
+                <p class="text-caption">
+                  While chatbot costs are variable (based on chat volume), human
+                  agent costs are fixed. This is why you will notice a decline
+                  in ROI at certain growth levels. When your human team hits
+                  capacity you need to hire another agent, but you may not use
+                  all the new capacity right away, leaving you room for chat
+                  volume growth and declining average per-chat costs until you
+                  reach capacity again (picture a staircase-shaped graph). With
+                  a chatbot, your costs increase in a straight line.
+                </p>
+              </v-col>
+              <v-col cols="12" sm="6" class="pa-10">
+                <v-card elevation="7" class="mb-10">
+                  <v-card-title class="text-h4">Results</v-card-title>
+
+                  <v-card-text>
+                    <kr-label
+                      label="Your team's annual chat capacity:"
+                      hint="Your current and anticipated annual chat capacity across your entire team."
+                    ></kr-label>
+                    <v-row align="center" justify="space-around">
+                      <div class="text-center pa-5">
+                        <p class="text-body-2 mb-1 font-weight-100">BEFORE</p>
+                        <p
+                          class="text-h4 red--text text--darken-4 font-weight-medium"
+                        >
+                          {{ annualChatCapacity.current | format }} chats
+                        </p>
+                      </div>
+                      <div class="text-center pa-5">
+                        <p class="text-body-2 mb-1 font-weight-100">AFTER</p>
+                        <p
+                          class="text-h4 red--text text--darken-4 font-weight-medium"
+                        >
+                          {{ annualChatCapacity.future | format }} chats
+                        </p>
+                      </div>
+                    </v-row>
+                  </v-card-text>
+
+                  <v-divider class="mx-7 my-5"></v-divider>
+
+                  <v-card-text>
+                    <kr-label
+                      label="To meet this new demand, you will need:"
+                      hint="Number of extra agents needed to handle your anticipated chat volume."
+                    ></kr-label>
+                    <v-row align="center" justify="space-around">
+                      <div class="text-center pa-5">
+                        <v-row no-gutters align="center" class="mb-3">
+                          <v-icon class="red--text text--darken-4 mr-4" x-large>
+                            fa-user-plus
+                          </v-icon>
+                          <p
+                            class="text-h2 red--text text--darken-4 mb-0 font-weight-medium"
+                          >
+                            {{ futureAgents.addition }}
+                          </p>
+                        </v-row>
+                        <small class="text-body-1"
+                          >new agents,<br />for a total of {{ futureAgents.total
+                          }}.</small
+                        >
+                      </div>
+                      <p class="text-body-2 mb-1 font-weight-100">OR</p>
+                      <div class="text-center pa-5">
+                        <v-row no-gutters align="center" class="mb-3"
+                          ><v-icon
+                            class="red--text text--darken-4 mr-4"
+                            x-large
+                          >
+                            fa-crown
+                          </v-icon>
+                          <p
+                            class="red--text text--darken-4 text-h2 mb-0 font-weight-medium"
+                          >
+                            1
+                          </p>
+                        </v-row>
+                        <small class="text-body-1"
+                          >KeyReply chatbot,<br />with unlimited
+                          capacity.</small
+                        >
+                      </div>
+                    </v-row>
+                  </v-card-text>
+
+                  <v-divider class="mx-7 my-5"></v-divider>
+
+                  <v-card-text>
+                    <kr-label
+                      label="Your total estimated costs are:"
+                    ></kr-label>
+
+                    <v-row>
+                      <v-col class="d-flex align-center">
+                        <v-icon color="cyan lighten-1">fa-stop</v-icon>
+                        <p class="mb-0 ml-2 text-body-1">Labor costs</p>
+                      </v-col>
+                      <v-col class="d-flex align-center">
+                        <v-icon color="amber lighten-1">fa-stop</v-icon>
+                        <p class="mb-0 ml-2 text-body-1">
+                          Livechat system costs
+                        </p></v-col
+                      >
+                      <v-col class="d-flex align-center"
+                        ><v-icon color="red darken-1">fa-stop</v-icon>
+                        <p class="mb-0 ml-2 text-body-1">
+                          Chatbot system costs
+                        </p></v-col
+                      >
+                    </v-row>
+
+                    <v-row no-gutters>
+                      <v-col cols="6">
+                        <kr-chart
+                          ref="chart-without-bot"
+                          id="chart-without-bot"
+                          :data="cost.withoutBot"
+                        ></kr-chart>
+                        <p
+                          class="text-body-1 mb-1 font-weight-100 px-5 text-center"
+                        >
+                          Anticipated cost with current team plus 5 new agents
+                        </p>
+                        <p
+                          class="text-h4 red--text text--darken-4 font-weight-medium text-center"
+                        >
+                          {{ cost.withoutBot.total | format('$ ') }}
+                        </p>
+                      </v-col>
+                      <v-col cols="6">
+                        <kr-chart
+                          ref="chart-with-bot"
+                          id="chart-with-bot"
+                          :data="cost.withBot"
+                        ></kr-chart>
+                        <p
+                          class="text-body-1 mb-1 font-weight-100 px-5 text-center"
+                        >
+                          Anticipated cost with current team plus 1 new KeyReply
+                          Chatbot
+                        </p>
+                        <p
+                          class="text-h4 red--text text--darken-4 font-weight-medium text-center"
+                        >
+                          {{ cost.withBot.total | format('$ ') }}
+                        </p>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+
+                  <v-divider class="mx-7 my-5"></v-divider>
+
+                  <v-card-text>
+                    <p
+                      class="text-body-1 mb-4 font-weight-100 px-5 text-center"
+                    >
+                      Adding an KeyReply AI-powered chatbot as a<br />
+                      customer engagement channel will generate a savings of
+                    </p>
+                    <p
+                      class="text-h4 red--text text--darken-4 font-weight-medium text-center"
+                    >
+                      {{ (cost.withoutBot.total - cost.withBot.total) |
+                      format('$ ') }}
+                    </p>
+                  </v-card-text>
+
+                  <v-divider class="mx-7 my-5"></v-divider>
+
+                  <v-card-text>
+                    <v-row>
+                      <v-col class="text-center">
+                        <img
+                          class="mb-5"
+                          style="max-width: 140px"
+                          src="assets/saving.svg"
+                        />
+                        <kr-label
+                          label="ROI in one year"
+                          hint="Savings less chatbot cost, divided by chatbot cost."
+                        ></kr-label>
+                        <p
+                          class="text-h4 red--text text--darken-4 font-weight-medium text-center"
+                        >
+                          {{ cost.roiInOneYear | format }}%
+                        </p>
+                      </v-col>
+                      <v-divider vertical class="mx-4"></v-divider>
+                      <v-col class="text-center">
+                        <img
+                          style="max-width: 140px"
+                          class="mb-5"
+                          src="assets/calendar.svg"
+                        />
+                        <kr-label
+                          label="Payback period"
+                          hint="Total live chat plus chatbot operating costs divided by savings, multiplied by 365."
+                        ></kr-label>
+                        <p
+                          class="text-h4 red--text text--darken-4 font-weight-medium text-center"
+                        >
+                          {{ cost.paybackPeriod | format }} days
+                        </p>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+
+                  <br />
+
+                  <v-btn color="primary" href="mailto:sales@keyreply.com" block>
+                    Enquiry Now!
+                  </v-btn>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-main>
+      </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
