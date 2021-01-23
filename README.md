@@ -1,2 +1,3 @@
-Frontend framework
-https://vuetifyjs.com/en/
+# Material Design CSS framework
+
+Vuetify https://vuetifyjs.com/en/

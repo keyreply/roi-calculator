@@ -23,10 +23,9 @@ Vue.component("kr-chart", {
         },
         plotOptions: {
           bar: {
-            columnWidth: "30px",
+            columnWidth: "50%",
             barHeight: "100%",
             dataLabels: {
-              position: "bottom",
               hideOverflowingLabels: false,
             },
           },
@@ -35,20 +34,23 @@ Vue.component("kr-chart", {
           enabled: false,
         },
         stroke: {
-          width: 2,
+          width: 1,
         },
         dataLabels: {
           enabled: true,
-          offsetX: -90,
           style: {
-            fontSize: "14px",
-            fontFamily: "Helvetica, Arial, sans-serif",
-            fontWeight: "bold",
-            colors: ["rgba(0,0,0,.6)"],
+            fontSize: "15px",
+            colors: ["#00ACC1", "#FFB300", "#e4392b", "#66bb6a"],
+          },
+          background: {
+            enabled: true,
+            borderRadius: 2,
+            padding: 4,
+            borderWidth: 1,
           },
           formatter: function (val) {
             const percent = val / 100;
-            return format(vm.data.total * percent, "$ ");
+            return format(vm.data.total * percent, "$");
           },
         },
         grid: {
@@ -63,7 +65,16 @@ Vue.component("kr-chart", {
             },
           },
         },
-        colors: ["#00ACC1", "#FFB300", "#e4392b"],
+        colors: ["#00ACC1", "#FFB300", "#e4392b", "#66bb6a"],
+        fill: {
+          type: ['solid', 'solid', 'solid', 'pattern'],
+          pattern: {
+            style: 'slantedLines',
+            width: 6,
+            height: 6,
+            strokeWidth: 1
+          }
+        },
         xaxis: {
           categories: ["A"],
           axisBorder: {
@@ -135,7 +146,11 @@ Vue.component("kr-slider", {
     "tagPrepend",
     "hint",
     "description",
+    "step"
   ],
+  filters: {
+    format,
+  },
   methods: {
     onChange: function (event) {
       this.value = event.target.value;
@@ -161,9 +176,9 @@ Vue.component("kr-slider", {
     <kr-label :hint="hint" :label="label"></kr-label>
     <p v-if="description" class="mb-2 text-body-2">{{ description }} </p>
     <div class="range-slider">
-      <input @input="onChange" class="range-slider__range" type="range" :value="value" :min="min" :max="max">
+      <input @input="onChange" class="range-slider__range" type="range" :value="value" :min="min" :max="max" :step="step">
       <span :style="tagStyle" class="range-slider__value">
-        {{ tagPrepend || '' }}{{ value || 0 }}{{ tagAppend || '' }}
+        {{ tagPrepend || '' }}{{ (value || 0) | format}}{{ tagAppend || '' }}
       </span>
     </div>
     </div>`,
@@ -193,15 +208,13 @@ Vue.component("kr-hours-counter", {
   },
   template: `<div class="mb-10">
     <kr-label :hint="hint" :label="label"></kr-label>
+    <br>
     <v-row>
       <v-col class="py-0" >
         <v-text-field @change="onChange" v-model="hoursPerDay" color="dark" type="number" suffix="hours/day" single-line solo dense></v-text-field>
       </v-col>
       <v-col class="py-0" >
         <v-text-field @change="onChange" v-model="daysPerWeek" color="dark" type="number" suffix="days/week" single-line solo dense></v-text-field>
-      </v-col>
-      <v-col class="py-0" >
-        <v-text-field @change="onChange" v-model="weeksPerYear" color="dark" type="number" suffix="weeks/year" single-line solo dense></v-text-field>
       </v-col>
     </v-row>
     </div>`,
@@ -243,6 +256,7 @@ new Vue({
       averageLengthOfChat: 0,
       numberOfConcurrentChatsPerAgent: 0,
       anticipatedChatVolumnGrowth: 0,
+      automationRate: 0
     };
   },
   filters: {
@@ -284,8 +298,8 @@ new Vue({
     },
     cost() {
       let chatbotRate = 0.014;
-      const chatbotCost = 50000;
-
+      const chatbotCost = 50000 + (3000 * 12);
+      const automationRate = 1 - this.automationRate / 100;
       const numberOrLiveChatAgents = parseInt(this.numberOrLiveChatAgents);
       const additionalChats =
         this.annualChatCapacity.future - this.annualChatCapacity.current;
@@ -315,15 +329,13 @@ new Vue({
       }
       const additionalChatsCost = additionalChats * chatbotRate;
       const withBotCost = chatbotCost + additionalChatsCost;
-      const withBotLabourCost =
-        numberOrLiveChatAgents * averageCompensationPerAgent;
-      const withBotSystemCost = numberOrLiveChatAgents * 1308;
-      const withBotTotalCost =
-        withBotCost + withBotLabourCost + withBotSystemCost;
+      const withBotLabourCost = numberOrLiveChatAgents * averageCompensationPerAgent * automationRate;
+      const withBotLiveChatCost = 12 * (160 * numberOrLiveChatAgents) + 2000
+      const withBotTotalCost = withBotCost + withBotLabourCost + withBotLiveChatCost;
 
       const saved = withoutBotTotalCost - withBotTotalCost;
       const roiInOneYear = ((saved - withBotCost) / withBotCost) * 100;
-      const paybackPeriod = (withBotCost / saved) * 365;
+      const paybackPeriod = (withBotCost / saved) * 365 / 30;
       return {
         roiInOneYear,
         paybackPeriod,
@@ -331,15 +343,15 @@ new Vue({
           total: withoutBotTotalCost,
           series: [
             {
-              name: "Labor costs",
+              name: "Labor cost",
               data: [(withoutBotLabourCost / withoutBotTotalCost) * 100],
             },
             {
-              name: "Live chat system costs",
+              name: "Live chat cost",
               data: [
                 ((withoutBotTotalCost - withoutBotLabourCost) /
                   withoutBotTotalCost) *
-                  100,
+                100,
               ],
             },
           ],
@@ -348,16 +360,20 @@ new Vue({
           total: withBotTotalCost,
           series: [
             {
-              name: "Labor costs",
-              data: [(withBotLabourCost / withBotTotalCost) * 100],
+              name: "Labor cost",
+              data: [(withBotLabourCost / withoutBotTotalCost) * 100],
             },
             {
-              name: "Live chat system costs",
-              data: [(withBotSystemCost / withBotTotalCost) * 100],
+              name: "Live chat cost",
+              data: [(withBotLiveChatCost / withoutBotTotalCost) * 100],
             },
             {
-              name: "Chatbot system costs",
-              data: [(withBotCost / withBotTotalCost) * 100],
+              name: "Chatbot cost",
+              data: [(withBotCost / withoutBotTotalCost) * 100],
+            },
+            {
+              name: "Savings",
+              data: [(withoutBotTotalCost - withBotTotalCost) / withoutBotTotalCost * 100],
             },
           ],
         },
