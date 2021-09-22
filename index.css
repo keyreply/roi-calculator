@@ -23,17 +23,17 @@ img {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #b71c1c;
+  background: #37CFFF;
   cursor: pointer;
   transition: background 0.15s ease-in-out;
 }
 
 .range-slider__range::-webkit-slider-thumb :hover {
-  background: #e4392b;
+  background: #1D57D8;
 }
 
 .range-slider__range:active::-webkit-slider-thumb {
-  background: #e4392b;
+  background: #1D57D8;
 }
 
 .range-slider__range::-moz-range-thumb {
@@ -41,21 +41,21 @@ img {
   height: 20px;
   border: 0;
   border-radius: 50%;
-  background: #b71c1c;
+  background: #37CFFF;
   cursor: pointer;
   transition: background 0.15s ease-in-out;
 }
 
 .range-slider__range::-moz-range-thumb:hover {
-  background: #e4392b;
+  background: #1D57D8;
 }
 
 .range-slider__range:active::-moz-range-thumb {
-  background: #e4392b;
+  background: #1D57D8;
 }
 
 .range-slider__range::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px #fff, 0 0 0 6px #e4392b;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px #1D57D8;
 }
 
 .range-slider__range {
@@ -75,7 +75,7 @@ img {
   width: 0;
   height: 0;
   border-top: 7px solid transparent;
-  border-right: 7px solid #b71c1c;
+  border-right: 7px solid #37CFFF;
   border-bottom: 7px solid transparent;
   content: "";
 }
@@ -88,13 +88,13 @@ img {
   line-height: 20px;
   text-align: center;
   border-radius: 3px;
-  background: #b71c1c;
+  background: #37CFFF;
   padding: 5px;
   margin-left: 8px;
 }
 
 ::-moz-range-track {
-  background: #d7dcdf;
+  background: #37CFFF;
   border: 0;
 }
 
