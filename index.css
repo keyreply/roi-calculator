@@ -104,3 +104,15 @@ input::-moz-focus-outer {
 }
 
 /* range slider end */
+
+
+@font-face { 
+  font-family: 'Futura PT Bold';  
+  src: url('https://f.hubspotusercontent30.net/hubfs/4034633/KeyReply%20v2/Fonts/FuturaPTBold.eot') format('eot'), url('https://f.hubspotusercontent30.net/hubfs/4034633/KeyReply%20v2/Fonts/FuturaPTBold.woff') format('woff'), url('https://f.hubspotusercontent30.net/hubfs/4034633/KeyReply%20v2/Fonts/FuturaPTBold.ttf') format('truetype');
+}
+
+/* Futura PT Bold */
+@font-face { 
+  font-family: 'Futura PT Book';  
+  src: url('https://f.hubspotusercontent30.net/hubfs/4034633/KeyReply%20v2/Fonts/FuturaPTBook.eot') format('eot'), url('https://f.hubspotusercontent30.net/hubfs/4034633/KeyReply%20v2/Fonts/FuturaPTBook.woff') format('woff'), url('https://f.hubspotusercontent30.net/hubfs/4034633/KeyReply%20v2/Fonts/FuturaPTBook.ttf') format('truetype');
+}
